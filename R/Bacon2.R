@@ -131,7 +131,7 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
             negativeages <- TRUE
   if(negativeages)
     stop("you have negative C14 ages so should select a postbomb curve", call.=FALSE)
-  info$calib <- bacon.calib(dets, info, date.res, ccdir=ccdir, cutoff=cutoff)
+  info$calib <- bacon.calib(dets, info, date.res, cutoff=cutoff)
   ###
   info$rng <- c()
   for (i in 1:length(info$calib$probs)) {
