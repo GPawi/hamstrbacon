@@ -21,4 +21,8 @@ Imports:
 Remotes: 
     earthsystemdiagnostics/hamstr
 RoxygenNote: 7.1.1
+Suggests: 
+     testthat,
+     knitr
+VignetteBuilder: knitr
 
