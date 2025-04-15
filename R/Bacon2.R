@@ -1,3 +1,4 @@
+#' @export 
 Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
                     prob = 0.95, d.min = NA, d.max = NA, add.bottom = TRUE, d.by = 1,
                     seed = NA, depths.file = FALSE, depths = c(), depth.unit = "cm",
