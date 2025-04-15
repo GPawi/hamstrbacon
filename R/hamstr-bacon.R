@@ -54,15 +54,15 @@ hamstr_bacon <- function(
   ask = FALSE,
   slump = c(),
   remove = FALSE, ssize = 2000, th0 = c(),
-  burnin = min(500, ssize), MinAge = c(), MaxAge = c(),
+  burnin = min(500, ssize), youngest.age = c(), oldest.age = c(),
   plot.pdf = FALSE,
   close.connections = FALSE,
   verbose = FALSE, suppress.plots = TRUE,
   bacon.change.thick = FALSE
   
 ){
-  if(packageVersion("rbacon") < "2.5.2")
-    stop("hamstr_bacon requires rbacon version 2.5.2 or higher")
+  if(packageVersion("rbacon") < "2.5.6")
+    stop("hamstr_bacon requires rbacon version 2.5.6 or higher")
 
   # check inputs
   if (any(length(depth) == 0, length(obs_age) == 0, length(obs_err)== 0))

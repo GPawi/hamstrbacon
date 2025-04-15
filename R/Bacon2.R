@@ -11,7 +11,7 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
                     ask = TRUE, run = TRUE, defaults = "defaultBacon_settings.txt",
                     sep = ",", dec = ".", runname = "", slump = c(),
                     remove = FALSE, BCAD = FALSE, ssize = 2000, th0 = c(),
-                    burnin = min(500, ssize), MinAge = c(), MaxAge = c(), MinYr = MinAge, MaxYr = MaxAge,
+                    burnin = min(500, ssize), youngest.age = c(), oldest.age = c(),
                     cutoff = 0.01, plot.pdf = TRUE, dark = 1, date.res = 100,
                     age.res = 200, yr.res = age.res, close.connections = TRUE,
                     verbose = TRUE, suppress.plots = TRUE, bacon.change.thick = FALSE,
@@ -101,8 +101,8 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
                          cc1 = cc1, cc2 = cc2, cc3 = cc3, cc4 = cc4, depth.unit = depth.unit,
                          normal = normal, t.a = t.a, t.b = t.b, delta.R = delta.R,
                          delta.STD = delta.STD, prob = prob, defaults = defaults,
-                         runname = runname, ssize = ssize, dark = dark, MinAge = MinAge,
-                         MaxAge = MaxAge, cutoff = cutoff, age.res = age.res,
+                         runname = runname, ssize = ssize, dark = dark, youngest.age = youngest.age,
+                         oldest.age = oldest.age, cutoff = cutoff, age.res = age.res,
                          after = after, age.unit = age.unit)
   assign_to_global("info", info)
   info$coredir <- coredir
@@ -325,8 +325,16 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
         cook()
       else message("  OK. Please adapt settings")
     }
-  if (close.connections)
-    closeAllConnections()
+  
+  if (close.connections) {
+    try({
+      conns <- showConnections(all = TRUE)
+      lapply(as.integer(rownames(conns)), function(i) {
+        con <- tryCatch(getConnection(i), error = function(e) NULL)
+        if (!is.null(con) && isOpen(con)) close(con)
+      })
+    }, silent = TRUE)
+  }
   
   # detach internal rbacon functions
   detach("rbacon_all")
