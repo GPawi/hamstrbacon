@@ -33,9 +33,9 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
     ccdir <- system.file("extdata", package = "IntCal")
   
   if (packageVersion("rbacon") > "2.5.3"){
-    ccdir <- validateDirectoryName(ccdir)
+    ccdir <- rbacon:::validateDirectoryName(ccdir)
   }  else {
-    ccdir <- .validateDirectoryName(ccdir)
+    ccdir <- rbacon:::.validateDirectoryName(ccdir)
   }
   
   defaults <- system.file("extdata", defaults, package = packageName())
