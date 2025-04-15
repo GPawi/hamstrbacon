@@ -139,9 +139,9 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
     info$rng <- range(info$rng, tmp[, 1])
   }
   if (length(th0) == 0)
-    info$th0 <- round(rnorm(2, max(MinAge, dets[1, 2]), dets[1,
+    info$th0 <- round(rnorm(2, max(info$d.min, dets[1, 2]), dets[1,
                                                              3]))
-  info$th0[info$th0 < info$MinAge] <- info$MinAge
+  info$th0[info$th0 < info$d.min] <- info$d.min
   if (length(depths) == 0)
     depths <- seq(info$d.min, info$d.max, by = d.by)
   if (depths.file) {
