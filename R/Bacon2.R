@@ -31,7 +31,8 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
     file.copy(fileCopy, coredir, recursive = TRUE, overwrite = FALSE)
   }
   if (ccdir == "")
-    ccdir <- system.file("extdata", package = "IntCal")
+    #ccdir <- system.file("extdata", package = "IntCal")
+    ccdir <- file.path(system.file("extdata", package = "IntCal"), "")
   
   # NOTE: validateDirectoryName was removed in newer rbacon versions.
   # If needed, add your own ccdir sanitation here.
