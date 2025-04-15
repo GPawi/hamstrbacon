@@ -32,11 +32,9 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
   if (ccdir == "")
     ccdir <- system.file("extdata", package = "IntCal")
   
-  if (packageVersion("rbacon") > "2.5.3"){
-    ccdir <- rbacon:::validateDirectoryName(ccdir)
-  }  else {
-    ccdir <- rbacon:::.validateDirectoryName(ccdir)
-  }
+  # NOTE: validateDirectoryName was removed in newer rbacon versions.
+  # If needed, add your own ccdir sanitation here.
+  ccdir <- ccdir
   
   defaults <- system.file("extdata", defaults, package = packageName())
   dets <- read.dets(core, coredir, sep = sep, dec = dec, cc = cc)
