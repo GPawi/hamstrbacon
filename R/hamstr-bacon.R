@@ -1,6 +1,6 @@
-- ## Interface to rbacon
+## Interface to rbacon
   
-  # Bacon wrapper ------
+# Bacon wrapper ------
 
 
 #' A Wrapper for rbacon::Bacon
@@ -34,36 +34,36 @@
 #' summary(hb1)
 #' }
 hamstr_bacon <- function(
-    id = "default",
-    depth,
-    obs_age, obs_err,
-    thick = 5,
-    d.min = NA, d.max = NA,
-    d.by = NULL,
-    seed = NA,
-    acc.shape = 1.5,  acc.mean = 20,
-    mem.strength = 10, mem.mean = 0.5,
-    boundary = NA,
-    hiatus.depths = NA, hiatus.max = 10000,
-    add = c(),
-    cc = 1, cc1 = "IntCal20", cc2 = "Marine20", cc3 = "SHCal20",
-    cc4 = "ConstCal", ccdir = "", postbomb = 0, delta.R = 0,
-    delta.STD = 0, t.a = 3, t.b = 4, normal = FALSE,
-    suggest = TRUE, accept.suggestions = TRUE,
-    reswarn = c(10, 200),
-    ask = FALSE,
-    slump = c(),
-    remove = FALSE, ssize = 2000, th0 = c(),
-    burnin = min(500, ssize), MinAge = c(), MaxAge = c(),
-    plot.pdf = FALSE,
-    close.connections = FALSE,
-    verbose = FALSE, suppress.plots = TRUE,
-    bacon.change.thick = FALSE
-    
-){
-  if(packageVersion("rbacon") < "2.5.2")
-    stop("hamstr_bacon requires rbacon version 2.5.2 or higher")
+  id = "default",
+  depth,
+  obs_age, obs_err,
+  thick = 5,
+  d.min = NA, d.max = NA,
+  d.by = NULL,
+  seed = NA,
+  acc.shape = 1.5,  acc.mean = 20,
+  mem.strength = 10, mem.mean = 0.5,
+  boundary = NA,
+  hiatus.depths = NA, hiatus.max = 10000,
+  add = c(),
+  cc = 1, cc1 = "IntCal20", cc2 = "Marine20", cc3 = "SHCal20",
+  cc4 = "ConstCal", ccdir = "", postbomb = 0, delta.R = 0,
+  delta.STD = 0, t.a = 3, t.b = 4, normal = FALSE,
+  suggest = TRUE, accept.suggestions = TRUE,
+  reswarn = c(10, 200),
+  ask = FALSE,
+  slump = c(),
+  remove = FALSE, ssize = 2000, th0 = c(),
+  burnin = min(500, ssize), youngest.age = c(), oldest.age = c(),
+  plot.pdf = FALSE,
+  close.connections = FALSE,
+  verbose = FALSE, suppress.plots = TRUE,
+  bacon.change.thick = FALSE
   
+){
+  if(packageVersion("rbacon") < "2.5.6")
+    stop("hamstr_bacon requires rbacon version 2.5.6 or higher")
+
   # check inputs
   if (any(length(depth) == 0, length(obs_age) == 0, length(obs_err)== 0))
     stop("depth, age, or obs_err are missing")
