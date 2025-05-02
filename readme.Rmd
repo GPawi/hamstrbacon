@@ -58,7 +58,7 @@ hambac_1 <- hamstr_bacon(id = "tst",
                          depth = MSB2K$depth,
                          obs_age = MSB2K$age,
                          obs_err = MSB2K$error,
-                         thick = 5, cc = 1,
+                         thick = 5, cc = 1, 
                          # pass seed to rbacon so that mcmc sample is the same
                          # each time for the example
                          seed = 20220103

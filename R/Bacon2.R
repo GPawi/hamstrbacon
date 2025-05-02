@@ -1,3 +1,4 @@
+#' @export
 Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
                     prob = 0.95, d.min = NA, d.max = NA, add.bottom = TRUE, d.by = 1,
                     seed = NA, depths.file = FALSE, depths = c(), depth.unit = "cm",
@@ -11,16 +12,16 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
                     ask = TRUE, run = TRUE, defaults = "defaultBacon_settings.txt",
                     sep = ",", dec = ".", runname = "", slump = c(),
                     remove = FALSE, BCAD = FALSE, ssize = 2000, th0 = c(),
-                    burnin = min(500, ssize), MinAge = c(), MaxAge = c(), MinYr = MinAge, MaxYr = MaxAge,
+                    burnin = min(500, ssize), youngest.age = c(), oldest.age = c(),
                     cutoff = 0.01, plot.pdf = TRUE, dark = 1, date.res = 100,
-                    age.res = 200, yr.res = age.res, close.connections = TRUE,
+                    age.res = 200, yr.res = age.res, close.connections = TRUE, save.info = TRUE,
                     verbose = TRUE, suppress.plots = TRUE, bacon.change.thick = FALSE,
                     ...)
 {
-  
+
   # Temporarily attach all internal functions from package rbacon
   attach(loadNamespace("rbacon"), name = "rbacon_all", warn.conflicts = FALSE)
-  
+
   coredir <- assign_coredir(coredir, core, ask, isPlum = FALSE)
   if (core == "MSB2K" || core == "RLGH3") {
     dir.create(paste(coredir, core, "/", sep = ""),
@@ -30,14 +31,13 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
     file.copy(fileCopy, coredir, recursive = TRUE, overwrite = FALSE)
   }
   if (ccdir == "")
-    ccdir <- system.file("extdata", package = "IntCal")
-  
-  if (packageVersion("rbacon") > "2.5.3"){
-    ccdir <- validateDirectoryName(ccdir)
-  }  else {
-    ccdir <- .validateDirectoryName(ccdir)
-  }
-  
+    #ccdir <- system.file("extdata", package = "rintcal")
+    ccdir <- file.path(system.file("extdata", package = "rintcal"), "")
+
+  # NOTE: validateDirectoryName was removed in newer rbacon versions.
+  # If needed, add your own ccdir sanitation here.
+  ccdir <- ccdir
+
   defaults <- system.file("extdata", defaults, package = packageName())
   dets <- read.dets(core, coredir, sep = sep, dec = dec, cc = cc)
   if (ncol(dets) > 4 && length(cc) > 0) {
@@ -79,13 +79,13 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
          FALSE)
   if (!is.na(boundary[1])){
     boundary <- sort(unique(boundary))
-    
+
     if (length(acc.mean) == 1)
       acc.mean <- rep(acc.mean, length(boundary) +
                         1)
   }
-  
-  
+
+
   if (!is.na(hiatus.depths[1])) {
     hiatus.depths <- sort(unique(hiatus.depths))
     if (length(acc.mean) == 1)
@@ -101,9 +101,12 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
                          cc1 = cc1, cc2 = cc2, cc3 = cc3, cc4 = cc4, depth.unit = depth.unit,
                          normal = normal, t.a = t.a, t.b = t.b, delta.R = delta.R,
                          delta.STD = delta.STD, prob = prob, defaults = defaults,
-                         runname = runname, ssize = ssize, dark = dark, MinAge = MinAge,
-                         MaxAge = MaxAge, cutoff = cutoff, age.res = age.res,
+                         runname = runname, ssize = ssize, dark = dark, youngest.age = youngest.age,
+                         oldest.age = oldest.age, cutoff = cutoff, age.res = age.res,
                          after = after, age.unit = age.unit)
+
+  info$save.info <- save.info
+
   assign_to_global("info", info)
   info$coredir <- coredir
   if (is.na(seed))
@@ -132,7 +135,7 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
             negativeages <- TRUE
   if(negativeages)
     stop("you have negative C14 ages so should select a postbomb curve", call.=FALSE)
-  info$calib <- bacon.calib(dets, info, date.res, ccdir=ccdir, cutoff=cutoff)
+  info$calib <- bacon.calib(dets, info, date.res, cutoff=cutoff)
   ###
   info$rng <- c()
   for (i in 1:length(info$calib$probs)) {
@@ -140,9 +143,9 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
     info$rng <- range(info$rng, tmp[, 1])
   }
   if (length(th0) == 0)
-    info$th0 <- round(rnorm(2, max(MinAge, dets[1, 2]), dets[1,
+    info$th0 <- round(rnorm(2, max(info$d.min, dets[1, 2]), dets[1,
                                                              3]))
-  info$th0[info$th0 < info$MinAge] <- info$MinAge
+  info$th0[info$th0 < info$d.min] <- info$d.min
   if (length(depths) == 0)
     depths <- seq(info$d.min, info$d.max, by = d.by)
   if (depths.file) {
@@ -266,8 +269,8 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
     info$hiatus.max <- add
   }
   assign_to_global("info", info)
-  
-  
+
+
   prepare <- function() {
     if (suppress.plots == FALSE){
       pn <- c(1, 2, 3, 3)
@@ -292,7 +295,7 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
   cook <- function() {
     txt <- paste(info$prefix, ".bacon", sep = "")
     bacon(txt, outfile, ssize, ccdir)
-    scissors(burnin, info)
+    scissors(burnin, info, save.info = save.info)
     if (suppress.plots == FALSE){
       agedepth(info, BCAD = BCAD, depths.file = depths.file,
                depths = depths, verbose = TRUE, age.unit = age.unit,
@@ -325,12 +328,20 @@ Bacon2 <- function (core = "MSB2K", thick = 5, coredir = "",
         cook()
       else message("  OK. Please adapt settings")
     }
-  if (close.connections)
-    closeAllConnections()
-  
+
+  if (close.connections) {
+    try({
+      conns <- showConnections(all = TRUE)
+      lapply(as.integer(rownames(conns)), function(i) {
+        con <- tryCatch(getConnection(i), error = function(e) NULL)
+        if (!is.null(con) && isOpen(con)) close(con)
+      })
+    }, silent = TRUE)
+  }
+
   # detach internal rbacon functions
   detach("rbacon_all")
-  
+
   # cleanup global
   #rm(info)
 }
