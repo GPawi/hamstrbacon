@@ -18,4 +18,9 @@ hamstrbacon provides an interface between rbacon and hamstr so
 \author{
 \strong{Maintainer}: Andrew Dolman \email{andrew.dolman@awi.de}
 
+Other contributors:
+\itemize{
+  \item Gregor Pfalz [contributor]
+}
+
 }
